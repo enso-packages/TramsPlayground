@@ -1,0 +1,32 @@
+import Std.Base
+import Std.HTTP
+import Std.Geo
+
+def getVehicles:
+    «0»http1 = Http . getJSON "http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/vehicleinfo/vehicles"
+    «1»toList1 = http1 . lookup "vehicles" . fromJust . toList
+    «2»filter1 = toList1 . filter (veh: «18»veh . lookup "isDeleted" . isNothing . and (veh . lookup "longitude" . isJust))
+    filter1
+
+def formatVehicle a:
+    «7»longitude = a . lookupReal "longitude" . / 3600000.0
+    «5»lookupReal1 = a . lookupReal "latitude" . / 3600000.0
+    «14»name = a.lookupText "name"
+    «17»id = a.lookupText "id"
+    «8»toJSON1 = (longitude, lookupReal1).toJSON
+    «15»props = Tip . insert "popupContent" name.toJSON . insert "id" id.toJSON
+    «9»geometry = Tip . insert "type" "Point".toJSON . insert "coordinates" toJSON1 . toJSON
+    «10»geojsonfeature1 = GeoJSONFeature props geometry
+    geojsonfeature1
+
+def generateMap:
+    «11»getVehicles1 = getVehicles
+    «12»each1 = getVehicles1 . each formatVehicle
+    «13»geojsonfeaturecollection1 = GeoJSONFeatureCollection each1
+    geojsonfeaturecollection1
+
+def main:
+    «19»every1 = every 3.seconds generateMap
+    None
+
+### META {"metas":[{"marker":0,"meta":{"_displayResult":true,"_selectedVisualizer":["base: json","/Users/marcinkostrzewa/code/luna-studio/luna-studio/atom/lib/visualizers/base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-192,"_vector2_x":0}}}},{"marker":1,"meta":{"_displayResult":false,"_selectedVisualizer":["base: json","/Users/marcinkostrzewa/code/luna-studio/luna-studio/atom/lib/visualizers/base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-192,"_vector2_x":288}}}},{"marker":2,"meta":{"_displayResult":true,"_selectedVisualizer":["base: json","/Users/marcinkostrzewa/code/luna-studio/luna-studio/atom/lib/visualizers/base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-192,"_vector2_x":560}}}},{"marker":18,"meta":{"_displayResult":false,"_selectedVisualizer":null,"_position":{"fromPosition":{"_vector2_y":0,"_vector2_x":0}}}},{"marker":11,"meta":{"_displayResult":true,"_selectedVisualizer":["base: json","base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-80,"_vector2_x":-336}}}},{"marker":12,"meta":{"_displayResult":true,"_selectedVisualizer":["base: json","base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-80,"_vector2_x":-48}}}},{"marker":13,"meta":{"_displayResult":true,"_selectedVisualizer":["map: GeoJSON","map/geojson.html"],"_position":{"fromPosition":{"_vector2_y":-80,"_vector2_x":304}}}},{"marker":19,"meta":{"_displayResult":false,"_selectedVisualizer":null,"_position":{"fromPosition":{"_vector2_y":-160,"_vector2_x":-48}}}},{"marker":7,"meta":{"_displayResult":false,"_selectedVisualizer":null,"_position":{"fromPosition":{"_vector2_y":112,"_vector2_x":-304}}}},{"marker":5,"meta":{"_displayResult":false,"_selectedVisualizer":null,"_position":{"fromPosition":{"_vector2_y":-80,"_vector2_x":-304}}}},{"marker":14,"meta":{"_displayResult":false,"_selectedVisualizer":null,"_position":{"fromPosition":{"_vector2_y":-480,"_vector2_x":-304}}}},{"marker":17,"meta":{"_displayResult":false,"_selectedVisualizer":null,"_position":{"fromPosition":{"_vector2_y":-272,"_vector2_x":-304}}}},{"marker":8,"meta":{"_displayResult":false,"_selectedVisualizer":["base: json","base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":0,"_vector2_x":160}}}},{"marker":15,"meta":{"_displayResult":false,"_selectedVisualizer":["base: json","base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-320,"_vector2_x":160}}}},{"marker":9,"meta":{"_displayResult":true,"_selectedVisualizer":["base: json","base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":0,"_vector2_x":512}}}},{"marker":10,"meta":{"_displayResult":false,"_selectedVisualizer":["base: json","base/json/json.html"],"_position":{"fromPosition":{"_vector2_y":-160,"_vector2_x":864}}}}]}
