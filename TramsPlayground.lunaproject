@@ -16,6 +16,7 @@ modulesSettings:
         - []
       - - ! 'map: GeoJSON'
         - map/geojson.html
+    currentBreadcrumb: main
     breadcrumbsSettings:
     - - items: []
       - breadcrumbCameraSettings:
@@ -39,6 +40,7 @@ modulesSettings:
             - []
       - - ! 'map: GeoJSON'
         - map/geojson.html
+    currentBreadcrumb: main
     breadcrumbsSettings:
     - - items: []
       - breadcrumbCameraSettings:
