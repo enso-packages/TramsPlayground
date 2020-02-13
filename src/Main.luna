@@ -4,7 +4,7 @@ import Std.Geo
 import Std.Time
 
 «20»def getVehicles:
-    «0»response = Http . getJSON "http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/vehicleinfo/vehicles"
+    «0»response = Http . getJSON "http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/vehicleinfo/vehicles?positionType=CORRECTED"
     «1»vehicles = response . getList "vehicles"
     «2»validVehicles = vehicles . filter (_ . lookup "longitude" . isJust)
     validVehicles
